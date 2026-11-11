@@ -172,7 +172,7 @@ footer{text-align:center;font-size:12px;color:var(--muted)}
 
 <script>
 // Cole aqui a URL do App da Web do Google Apps Script (termina em /exec)
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxvMrFMyZW1JHI_68qSbDQVhFSp_iNVvxUHSgIHNW0/dev';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYYKkJ26TKJ4O3qaCjEUkL0WTVeoWqryYFEJgE336hPtcea0bTPWcl-iMU3oXJwkJZ/exec';
 
 const $=id=>document.getElementById(id);
 if(!SCRIPT_URL.startsWith('https://')) $('cfgWarn').hidden=false;
@@ -229,11 +229,21 @@ $('form').addEventListener('submit',async e=>{
   const btn=e.submitter||document.querySelector('#form .btn-main');
   btn.disabled=true;btn.textContent='Enviando...';
   try{
-    const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({responsaveis:resp,alunos,presenca:p})});
-    const j=await r.json();
-    if(!j.ok) throw new Error(j.erro||'erro');
+    if(!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(SCRIPT_URL.trim()))
+      throw new Error('URL do Apps Script inválida (precisa terminar em /exec)');
+    let r;
+    try{
+      r=await fetch(SCRIPT_URL.trim(),{method:'POST',body:JSON.stringify({responsaveis:resp,alunos,presenca:p})});
+    }catch(netErr){
+      throw new Error('o Google recusou o acesso. Confira se a implantação está com acesso para "Qualquer pessoa"');
+    }
+    if(!r.ok) throw new Error('resposta HTTP '+r.status+' do Google');
+    let j;
+    try{ j=await r.json(); }catch(parseErr){ throw new Error('o Google devolveu uma página em vez dos dados (acesso não é "Qualquer pessoa")'); }
+    if(!j.ok) throw new Error(j.erro||'erro no script');
   }catch(x){
-    err.textContent='Não foi possível registrar a confirmação. Verifique a internet e tente de novo.';err.hidden=false;
+    console.error(x);
+    err.textContent='Não foi possível registrar a confirmação ('+x.message+'). Tente de novo ou avise o organizador.';err.hidden=false;
     btn.disabled=false;btn.textContent='Confirmar';return;
   }
   btn.disabled=false;btn.textContent='Confirmar';
