@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Confraternização Vila Real Futsal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: uma coluna estreita, cabeçalho como placar de quadra, cartões só para avisos, PIX e total */
+:root{
+  --bg:#f3f6f2; --surface:#ffffff; --fg:#14231b; --muted:#56685d;
+  --accent:#0f7a3e; --accent-fg:#ffffff; --gold:#c99a1a; --line:#d5ded7;
+  --warn-bg:#fff4dc; --warn-fg:#7a5300; --ok:#0f7a3e; --danger:#b3362a;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1612; --surface:#16211b; --fg:#e7efe9; --muted:#9db0a4;
+  --accent:#3dbb73; --accent-fg:#06140c; --gold:#e5bb48; --line:#2a3a31;
+  --warn-bg:#2e2410; --warn-fg:#f1cd7a; --ok:#3dbb73; --danger:#f0806f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1612; --surface:#16211b; --fg:#e7efe9; --muted:#9db0a4;
+  --accent:#3dbb73; --accent-fg:#06140c; --gold:#e5bb48; --line:#2a3a31;
+  --warn-bg:#2e2410; --warn-fg:#f1cd7a; --ok:#3dbb73; --danger:#f0806f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{background:var(--accent);color:var(--accent-fg);border-radius:14px;padding:24px 22px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px}
+header::after{content:"";position:absolute;right:-60px;top:50%;width:140px;height:140px;border:3px solid currentColor;opacity:.18;border-radius:50%;transform:translateY(-50%)}
+header::before{content:"";position:absolute;left:calc(100% - 60px);top:0;bottom:0;border-left:3px solid currentColor;opacity:.18}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;opacity:.85}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,8vw,38px);line-height:1.05;margin:6px 0 0;text-wrap:balance}
+.facts{display:flex;flex-wrap:wrap;gap:8px;position:relative;z-index:1}
+.fact{background:rgba(255,255,255,.16);border-radius:8px;padding:6px 10px;font-weight:600;font-size:14px;font-variant-numeric:tabular-nums}
+.notice{background:var(--warn-bg);color:var(--warn-fg);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.notice strong{font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.notice ul{margin:0;padding-left:20px;font-weight:600}
+form{display:flex;flex-direction:column;gap:22px}
+.group{display:flex;flex-direction:column;gap:10px}
+.group-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.group-head h2{font-family:var(--display);font-size:19px;margin:0}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.row{display:flex;gap:8px;align-items:center}
+.row input{flex:1;min-width:0}
+input[type=text]{width:100%;font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg)}
+input[type=text]:focus{outline:none;border-color:var(--accent)}
+.rm{background:transparent;border:1.5px solid var(--line);color:var(--muted);width:44px;height:44px;padding:0;border-radius:10px;font-size:20px;line-height:1;flex:none}
+.rm:hover{color:var(--danger);border-color:var(--danger)}
+.add{background:transparent;border:1.5px dashed var(--accent);color:var(--accent);padding:10px 14px;align-self:flex-start}
+fieldset{border:0;padding:0;margin:0}
+legend{font-family:var(--display);font-size:19px;font-weight:600;margin-bottom:8px;padding:0}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice input{position:absolute;opacity:0}
+.choice span{display:block;text-align:center;padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);cursor:pointer;font-weight:600}
+.choice input:checked+span{border-color:var(--accent);background:var(--accent);color:var(--accent-fg)}
+.choice input:focus-visible+span{outline:2px solid var(--gold);outline-offset:2px}
+.pix{background:var(--surface);border:1.5px dashed var(--gold);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.pix h2{font-family:var(--display);font-size:20px;margin:0}
+.pix p{margin:0;color:var(--muted);font-size:14px}
+.key{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.key code{font-family:var(--body);font-variant-numeric:tabular-nums;font-size:19px;font-weight:600;letter-spacing:.02em;user-select:all;flex:1;min-width:0}
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-top:1px solid var(--line);padding-top:10px;flex-wrap:wrap}
+.total span{color:var(--muted);font-size:14px}
+.total b{font-family:var(--display);font-size:26px;color:var(--fg);font-variant-numeric:tabular-nums}
+button,.btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:12px 16px;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.btn-ghost{background:transparent;border:1.5px solid var(--accent);color:var(--accent);padding:8px 14px}
+.btn-main{background:var(--accent);color:var(--accent-fg);width:100%;font-size:17px}
+button:focus-visible,.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.err{color:var(--danger);font-size:14px;margin:0;font-weight:600}
+.done{background:var(--surface);border:1.5px solid var(--ok);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.done h2{font-family:var(--display);margin:0;font-size:22px}
+.done dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px}
+.done dt{color:var(--muted)} .done dd{margin:0;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.pay{background:var(--warn-bg);color:var(--warn-fg);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.pay b{font-family:var(--display);font-size:30px;font-variant-numeric:tabular-nums}
+.small{font-size:13px;color:var(--muted);margin:0}
+footer{text-align:center;font-size:12px;color:var(--muted)}
+</style>
+<style>
+.btn-main[disabled]{opacity:.6;cursor:wait}
+.cfg{background:var(--warn-bg);color:var(--warn-fg);border-radius:12px;padding:12px 16px;font-size:14px;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="cfg" id="cfgWarn" hidden>Formulário ainda não configurado: falta colar a URL do Apps Script no index.html.</div>
+  <header>
+    <div>
+      <div class="eyebrow">Projeto Vila Real Futsal</div>
+      <h1>Confraternização de fim de ano</h1>
+    </div>
+    <div class="facts">
+      <span class="fact">Sábado, 05/12/2026</span>
+      <span class="fact">A partir das 10:00</span>
+      <span class="fact">R$ 30,00 por adulto</span>
+    </div>
+  </header>
+
+  <div class="notice" role="note">
+    <strong>Atenção</strong>
+    <ul>
+      <li>Entrada permitida apenas com o responsável.</li>
+      <li>Não é permitido levar cooler.</li>
+    </ul>
+  </div>
+
+  <form id="form" novalidate>
+    <div class="group">
+      <div class="group-head">
+        <h2>Responsáveis / adultos</h2>
+        <p class="hint">R$ 30,00 cada</p>
+      </div>
+      <div id="adults"></div>
+      <button type="button" class="add" id="addAdult">+ Adicionar responsável</button>
+    </div>
+
+    <div class="group">
+      <div class="group-head">
+        <h2>Alunos</h2>
+      </div>
+      <div id="kids"></div>
+      <button type="button" class="add" id="addKid">+ Adicionar aluno</button>
+    </div>
+
+    <fieldset>
+      <legend>Confirmação de presença</legend>
+      <div class="choices">
+        <label class="choice" for="sim"><input type="radio" name="pres" id="sim" value="sim"><span>Sim, vamos</span></label>
+        <label class="choice" for="nao"><input type="radio" name="pres" id="nao" value="nao"><span>Não poderemos</span></label>
+      </div>
+    </fieldset>
+
+    <div class="pix" id="pixBox">
+      <h2>Pagamento via PIX</h2>
+      <p>Chave PIX (celular):</p>
+      <div class="key">
+        <code id="pixkey">+55 11 95846-8705</code>
+        <button type="button" class="btn-ghost" id="copy">Copiar chave</button>
+      </div>
+      <div class="total">
+        <span id="totalLabel">1 adulto × R$ 30,00</span>
+        <b id="total">R$ 30,00</b>
+      </div>
+    </div>
+
+    <p class="err" id="err" hidden></p>
+    <button type="submit" class="btn-main">Confirmar</button>
+  </form>
+
+  <section class="done" id="done" hidden>
+    <h2 id="doneTitle">Presença registrada</h2>
+    <dl>
+      <dt>Responsáveis</dt><dd id="dResp"></dd>
+      <dt>Alunos</dt><dd id="dAluno"></dd>
+      <dt>Presença</dt><dd id="dPres"></dd>
+    </dl>
+    <div class="pay" id="payBox">
+      <span>Valor do PIX a pagar</span>
+      <b id="dTotal"></b>
+      <span id="dCalc"></span>
+      <span>Chave: +55 11 95846-8705</span>
+    </div>
+    <a class="btn btn-main" id="wa" target="_blank" rel="noopener">Enviar confirmação pelo WhatsApp</a>
+    <p class="small">Sua confirmação já foi registrada. Depois de pagar, envie o comprovante do PIX para (11) 95846-8705.</p>
+    <button type="button" class="btn-ghost" id="again">Fazer outra confirmação</button>
+  </section>
+
+  <footer>Vila Real Futsal · Confraternização de fim de ano · 05/12/2026</footer>
+</div>
+
+<script>
+// Cole aqui a URL do App da Web do Google Apps Script (termina em /exec)
+const SCRIPT_URL = 'COLE_AQUI_A_URL_DO_APPS_SCRIPT';
+
+const $=id=>document.getElementById(id);
+if(!SCRIPT_URL.startsWith('https://')) $('cfgWarn').hidden=false;
+const PRICE=30;
+const brl=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+let seq=0;
+
+function addRow(listId,placeholder){
+  const list=$(listId);
+  const row=document.createElement('div');row.className='row';
+  const inp=document.createElement('input');inp.type='text';inp.id=listId+'-'+(++seq);inp.placeholder=placeholder;
+  inp.setAttribute('aria-label',placeholder);
+  inp.addEventListener('input',update);
+  const rm=document.createElement('button');rm.type='button';rm.className='rm';rm.textContent='×';rm.setAttribute('aria-label','Remover');
+  rm.addEventListener('click',()=>{row.remove();refresh(listId);update();});
+  row.append(inp,rm);list.appendChild(row);refresh(listId);update();
+  return inp;
+}
+function refresh(listId){
+  const rows=$(listId).querySelectorAll('.row');
+  rows.forEach(r=>r.querySelector('.rm').hidden=rows.length===1);
+}
+function names(listId){return [...$(listId).querySelectorAll('input')].map(i=>i.value.trim()).filter(Boolean)}
+function adultsCount(){return Math.max(1,$('adults').querySelectorAll('.row').length)}
+function going(){const p=document.querySelector('input[name=pres]:checked');return p?p.value:null}
+function update(){
+  const n=adultsCount();
+  const isNo=going()==='nao';
+  $('pixBox').hidden=isNo;
+  $('totalLabel').textContent=`${n} ${n===1?'adulto':'adultos'} × ${brl(PRICE)}`;
+  $('total').textContent=brl(n*PRICE);
+}
+
+$('addAdult').addEventListener('click',()=>addRow('adults','Nome do responsável').focus());
+$('addKid').addEventListener('click',()=>addRow('kids','Nome do aluno').focus());
+document.querySelectorAll('input[name=pres]').forEach(r=>r.addEventListener('change',update));
+addRow('adults','Nome do responsável');
+addRow('kids','Nome do aluno');
+
+$('copy').addEventListener('click',()=>{
+  const btn=$('copy');
+  const ok=()=>{btn.textContent='Copiada!';setTimeout(()=>btn.textContent='Copiar chave',1800)};
+  const fallback=()=>{const r=document.createRange();r.selectNodeContents($('pixkey'));const s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='Selecionada, copie';};
+  try{navigator.clipboard.writeText('+5511958468705').then(ok,fallback)}catch(e){fallback()}
+});
+
+$('form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const resp=names('adults'), alunos=names('kids'), p=going(), err=$('err');
+  const empty=[...document.querySelectorAll('#adults input, #kids input')].some(i=>!i.value.trim());
+  if(!resp.length||!alunos.length||!p){err.textContent='Preencha pelo menos um responsável, um aluno e escolha a presença.';err.hidden=false;return}
+  if(empty){err.textContent='Há campos de nome em branco. Preencha ou remova com o ×.';err.hidden=false;return}
+  err.hidden=true;
+  const btn=e.submitter||document.querySelector('#form .btn-main');
+  btn.disabled=true;btn.textContent='Enviando...';
+  try{
+    const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({responsaveis:resp,alunos,presenca:p})});
+    const j=await r.json();
+    if(!j.ok) throw new Error(j.erro||'erro');
+  }catch(x){
+    err.textContent='Não foi possível registrar a confirmação. Verifique a internet e tente de novo.';err.hidden=false;
+    btn.disabled=false;btn.textContent='Confirmar';return;
+  }
+  btn.disabled=false;btn.textContent='Confirmar';
+  const yes=p==='sim';
+  const n=resp.length, total=n*PRICE;
+  $('dResp').textContent=resp.join(', ');
+  $('dAluno').textContent=alunos.join(', ');
+  $('dPres').textContent=yes?'Sim, vamos participar':'Não poderemos ir';
+  $('doneTitle').textContent=yes?'Presença confirmada':'Ausência registrada';
+  $('payBox').hidden=!yes;
+  $('dTotal').textContent=brl(total);
+  $('dCalc').textContent=`${n} ${n===1?'adulto':'adultos'} × ${brl(PRICE)}`;
+  let msg=`Confraternização Vila Real Futsal - 05/12/2026\nResponsáveis: ${resp.join(', ')}\nAlunos: ${alunos.join(', ')}\nPresença: ${yes?'Sim, vamos participar':'Não poderemos ir'}`;
+  if(yes) msg+=`\nValor do PIX: ${brl(total)} (${n} ${n===1?'adulto':'adultos'} × ${brl(PRICE)})`;
+  $('wa').href='https://wa.me/5511958468705?text='+encodeURIComponent(msg);
+  $('wa').textContent=yes?'Enviar comprovante pelo WhatsApp':'Avisar pelo WhatsApp';
+  $('form').hidden=true;$('done').hidden=false;window.scrollTo(0,0);
+});
+
+$('again').addEventListener('click',()=>{
+  $('form').reset();$('adults').innerHTML='';$('kids').innerHTML='';
+  addRow('adults','Nome do responsável');addRow('kids','Nome do aluno');
+  $('done').hidden=true;$('form').hidden=false;update();
+});
+</script>
+
+</body>
+</html>
